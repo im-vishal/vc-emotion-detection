@@ -3,27 +3,11 @@ import pandas as pd
 import os
 from sklearn.model_selection import train_test_split
 import yaml
-import logging
+from src import logger
 
 # Set the option to opt-in to the future behavior
 pd.set_option('future.no_silent_downcasting', True)
 
-# Logging Configuration
-logger = logging.getLogger('data ingestion')
-logger.setLevel('DEBUG')
-
-console_handler = logging.StreamHandler()
-console_handler.setLevel('DEBUG')
-
-file_handler = logging.FileHandler('errors.log')
-file_handler.setLevel('ERROR')
-
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-console_handler.setFormatter(formatter)
-file_handler.setFormatter(formatter)
-
-logger.addHandler(console_handler)
-logger.addHandler(file_handler)
 
 def load_params(params_path: str) -> dict:
     """Load parameters from a YAML file"""
