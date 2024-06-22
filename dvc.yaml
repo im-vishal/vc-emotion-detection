@@ -23,3 +23,13 @@ stages:
     - feature_engineering.max_features
     outs:
     - data/processed
+  model_building:
+    cmd: python src/model/model_building.py
+    deps:
+    - ./src/model/model_building.py
+    - data/processed
+    params:
+    - model_building.learning_rate
+    - model_building.n_estimators
+    outs:
+    - model/model.pkl
