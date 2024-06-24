@@ -8,40 +8,37 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from src import logger
 
-# Set the option to opt-in to the future behavior
-pd.set_option('future.no_silent_downcasting', True)
-
 
 nltk.download('wordnet')
 nltk.download('stopwords')
 
-def lemmatization(text) -> str:
-    """Lemmatize the text"""
+def lemmatization(text):
+    """Lemmatize the text."""
     lemmatizer = WordNetLemmatizer()
     text = text.split()
     text = [lemmatizer.lemmatize(word) for word in text]
     return " ".join(text)
 
 def remove_stop_words(text):
-    """Remove stop words from the text"""
+    """Remove stop words from the text."""
     stop_words = set(stopwords.words("english"))
     text = [word for word in str(text).split() if word not in stop_words]
     return " ".join(text)
 
 def removing_numbers(text):
-    """Remove numbers from the text"""
-    text = " ".join([char for char in text if not char.isdigit()])
+    """Remove numbers from the text."""
+    text = ''.join([char for char in text if not char.isdigit()])
     return text
 
 def lower_case(text):
-    """Convert text to lower case"""
+    """Convert text to lower case."""
     text = text.split()
     text = [word.lower() for word in text]
     return " ".join(text)
 
 def removing_punctuations(text):
-    """Remove punctuations from the text"""
-    text = re.sub('[%s]' % re.escape(string.punctuation), ' ', text)
+    """Remove punctuations from the text."""
+    text = re.sub(r'[%s]' % re.escape(string.punctuation), ' ', text)
     text = text.replace('؛', "")
     text = re.sub(r'\s+', ' ', text).strip()
     return text
@@ -57,7 +54,6 @@ def remove_small_sentences(df):
         if len(df.text.iloc[i].split()) < 3:
             df.text.iloc[i] = np.nan
 
-
 def normalize_text(df):
     """Normalize the text data."""
     try:
@@ -70,7 +66,7 @@ def normalize_text(df):
         df['content'] = df['content'].apply(removing_punctuations)
         logger.debug('punctuations removed')
         df['content'] = df['content'].apply(removing_urls)
-        logger.debug('urls removed')
+        logger.debug('urls')
         df['content'] = df['content'].apply(lemmatization)
         logger.debug('lemmatization performed')
         logger.debug('Text normalization completed')
@@ -79,9 +75,7 @@ def normalize_text(df):
         logger.error('Error during text normalization: %s', e)
         raise
 
-
-def main() -> None:
-    """main function to call other functions"""
+def main():
     try:
         # Fetch the data from data/raw
         train_data = pd.read_csv('./data/raw/train.csv')
@@ -95,15 +89,14 @@ def main() -> None:
         # Store the data inside data/processed
         data_path = os.path.join("./data", "interim")
         os.makedirs(data_path, exist_ok=True)
-
+        
         train_processed_data.to_csv(os.path.join(data_path, "train_processed.csv"), index=False)
         test_processed_data.to_csv(os.path.join(data_path, "test_processed.csv"), index=False)
-
+        
         logger.debug('Processed data saved to %s', data_path)
     except Exception as e:
         logger.error('Failed to complete the data transformation process: %s', e)
         print(f"Error: {e}")
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

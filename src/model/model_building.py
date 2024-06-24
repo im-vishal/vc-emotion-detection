@@ -5,9 +5,6 @@ from sklearn.ensemble import GradientBoostingClassifier
 import yaml
 from src import logger
 
-# Set the option to opt-in to the future behavior
-pd.set_option('future.no_silent_downcasting', True)
-
 
 def load_params(params_path: str) -> dict:
     """Load parameters from a YAML file."""
@@ -53,12 +50,11 @@ def train_model(X_train: np.ndarray, y_train: np.ndarray, params: dict) -> Gradi
 def save_model(model, file_path: str) -> None:
     """Save the trained model to a file."""
     try:
-        joblib.dump(model,'model/model.joblib')
+        joblib.dump(model, file_path)
         logger.debug('Model saved to %s', file_path)
     except Exception as e:
         logger.error('Error occurred while saving the model: %s', e)
         raise
-
 
 def main():
     try:
@@ -70,11 +66,10 @@ def main():
 
         clf = train_model(X_train, y_train, params)
         
-        save_model(clf, 'models/model.pkl')
+        save_model(clf, 'models/model.joblib')
     except Exception as e:
         logger.error('Failed to complete the model building process: %s', e)
         print(f"Error: {e}")
 
 if __name__ == '__main__':
     main()
-

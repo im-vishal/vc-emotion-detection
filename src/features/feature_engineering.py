@@ -5,9 +5,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import yaml
 from src import logger
 
-# Set the option to opt-in to the future behavior
-pd.set_option('future.no_silent_downcasting', True)
-
 
 def load_params(params_path: str) -> dict:
     """Load parameters from a YAML file."""
@@ -26,7 +23,6 @@ def load_params(params_path: str) -> dict:
         logger.error('Unexpected error: %s', e)
         raise
 
-
 def load_data(file_path: str) -> pd.DataFrame:
     """Load data from a CSV file."""
     try:
@@ -41,7 +37,6 @@ def load_data(file_path: str) -> pd.DataFrame:
         logger.error('Unexpected error occurred while loading the data: %s', e)
         raise
 
-
 def apply_tfidf(train_data: pd.DataFrame, test_data: pd.DataFrame, max_features: int) -> tuple:
     """Apply TfIdf to the data."""
     try:
@@ -52,23 +47,23 @@ def apply_tfidf(train_data: pd.DataFrame, test_data: pd.DataFrame, max_features:
         X_test = test_data['content'].values
         y_test = test_data['sentiment'].values
 
-        X_train_tfidf = vectorizer.fit_transform(X_train)
-        X_test_tfidf = vectorizer.transform(X_test)
+        X_train_bow = vectorizer.fit_transform(X_train)
+        X_test_bow = vectorizer.transform(X_test)
 
-        train_df = pd.DataFrame(X_train_tfidf.toarray())
+        train_df = pd.DataFrame(X_train_bow.toarray())
         train_df['label'] = y_train
 
-        test_df = pd.DataFrame(X_test_tfidf.toarray())
+        test_df = pd.DataFrame(X_test_bow.toarray())
         test_df['label'] = y_test
 
-        logger.debug('Tfidf applied and data transformed')
+        logger.debug('Bag of Words applied and data transformed')
         return train_df, test_df
     except Exception as e:
         logger.error('Error during Bag of Words transformation: %s', e)
         raise
 
 def save_data(df: pd.DataFrame, file_path: str) -> None:
-    """Save the DataFrame to a CSV file."""
+    """Save the dataframe to a CSV file."""
     try:
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         df.to_csv(file_path, index=False)
@@ -76,7 +71,6 @@ def save_data(df: pd.DataFrame, file_path: str) -> None:
     except Exception as e:
         logger.error('Unexpected error occurred while saving the data: %s', e)
         raise
-
 
 def main():
     try:
